@@ -1,0 +1,15 @@
+{
+  "name": "jayankaghosh/om",
+  "description": "The Advanced Object Manager with dependency injection, plugins, preferences, and much more... NO MORE new Obj()!",
+  "type": "php-extension",
+  "license": [
+    "OSL-3.0",
+    "AFL-3.0"
+  ],
+  "autoload": {
+    "psr-4": {
+      "Om\\": "src/"
+    }
+  },
+  "version": "1.0.0"
+}
