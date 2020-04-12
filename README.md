@@ -201,7 +201,7 @@ generate the files.
 
 ### 8. Factory Pattern
 
-Requires [Generated Classes](#7.-generated-classes)
+Requires [Generated Classes](#7-generated-classes)
 
 Once we gave OM the writable directory to generate files in, we can use the
 factory pattern of OM to generate new classes instead of singleton.
@@ -219,7 +219,7 @@ For that simply suffix the word `Factory` after the class name.
     
 ### 9. Plugins
 
-Requires [Generated Classes](#7.-generated-classes)
+Requires [Generated Classes](#7-generated-classes)
 
 Plugins are an elegant way of achieving complete extendability of an
 application. Plugins give us the ability to intercept the flow of __any 
