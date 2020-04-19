@@ -109,4 +109,26 @@ class Argument
         }
         $this->value = $value;
     }
+
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        $value = $this->getValue();
+        $result = [
+            'name' => $this->getName(),
+            'type' => $this->getType(),
+            'value' => $value
+        ];
+        if (is_array($value)) {
+            $items= [];
+            /** @var Item $item */
+            foreach ($value as $item) {
+                $items[$item->getName()] = $item->toArray();
+            }
+            $result['value'] = $items;
+        }
+        return $result;
+    }
 }

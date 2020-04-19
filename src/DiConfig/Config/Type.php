@@ -129,4 +129,23 @@ class Type
         $this->plugins[$plugin->getName()] = $plugin;
         return $this;
     }
+
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        $result = [
+            'name' => $this->getName(),
+            'plugins' => [],
+            'arguments' => []
+        ];
+        foreach ($this->getPlugins() as $plugin) {
+            $result['plugins'][$plugin->getName()] = $plugin->toArray();
+        }
+        foreach ($this->getArguments() as $argument) {
+            $result['arguments'][$argument->getName()] = $argument->toArray();
+        }
+        return $result;
+    }
 }

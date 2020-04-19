@@ -3,6 +3,10 @@
 require_once __DIR__ . '/../common.php';
 
 $config = Om\DiConfig\Config::fromXml(\file_get_contents(__DIR__  . '/di.xml'));
+$config = Om\DiConfig\Config::fromXml(
+    \file_get_contents(__DIR__  . '/di-extended.xml'),
+    $config
+);
 $writablePath = __DIR__  . '/generated';
 $objectManagerFactory = new \Om\OmFactory($config, $writablePath);
 $objectManager = $objectManagerFactory->getInstance();
@@ -37,6 +41,6 @@ class AdderPlugin {
     }
 }
 
-/** @var Calculator $calculator */
-$calculator = $objectManager->get('my-adder-alias');
-echo $calculator->add(2, 3);
+/** @var Adder $adder */
+$adder = $objectManager->get('my-adder-alias');
+echo $adder->add(2, 3);

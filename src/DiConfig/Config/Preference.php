@@ -63,4 +63,15 @@ class Preference
     {
         $this->type = $type;
     }
+
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        return [
+            'for' => $this->getFor(),
+            'type' => $this->getType()
+        ];
+    }
 }

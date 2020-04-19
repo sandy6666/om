@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <config>
     <preference for="my-adder-alias" type="Adder" />
-    <type name="my-adder-alias">
+    <type name="Adder">
         <arguments>
             <argument name="prefix" xsi:type="string">The sum is </argument>
         </arguments>
-    </type>
-    <type name="Adder">
-        <plugin name="add-suffix" type="AdderPlugin" />
     </type>
 </config>

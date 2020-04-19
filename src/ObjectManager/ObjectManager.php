@@ -70,6 +70,7 @@ class ObjectManager
     public function create($class, $arguments = []) {
         $arguments = $this->typeResolver->resolveArguments($class, $arguments);
         $class = $this->typeResolver->resolve($class);
+        $arguments = $this->typeResolver->resolveArguments($class, $arguments);
         $arguments = $this->reflectionClass->parseClass($class, $arguments);
         return new $class(...$arguments);
     }

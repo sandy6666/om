@@ -85,4 +85,16 @@ class Plugin
     {
         $this->disabled = $disabled;
     }
+
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        return [
+            'name' => $this->getName(),
+            'type' => $this->getType(),
+            'disabled' => $this->isDisabled()
+        ];
+    }
 }

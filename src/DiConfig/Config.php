@@ -43,14 +43,23 @@ class Config
 
     /**
      * @param array $config
+     * @param Config|null $mergeWith
      * @return Config
      */
-    public static function fromArray(array $config)
+    public static function fromArray(array $config, ?Config $mergeWith = null)
     {
+        if ($mergeWith instanceof Config) {
+            $config = array_merge_recursive($mergeWith->toArray(), $config);
+        }
         return new Config($config);
     }
 
-    public static function fromXml(string $xml)
+    /**
+     * @param string $xml
+     * @param null|Config $mergeWith
+     * @return Config
+     */
+    public static function fromXml(string $xml, ?Config $mergeWith = null)
     {
         $xmlObject = @new JsonSerializer($xml);
         $config = \json_decode(\json_encode($xmlObject), true)['config'] ?? [];
@@ -60,6 +69,9 @@ class Config
             'preferences' => [],
             'types' => []
         ];
+        if ($mergeWith instanceof Config) {
+            $result = $mergeWith->toArray();
+        }
         foreach ($preferences as $preference) {
             self::parsePreference($result['preferences'], $preference);
         }
@@ -206,5 +218,23 @@ class Config
     public function getTypes()
     {
         return $this->config['types'];
+    }
+
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        $result = [
+            'preferences' => [],
+            'types' => []
+        ];
+        foreach ($this->getPreferences() as $preference) {
+            $result['preferences'][$preference->getFor()] = $preference->toArray();
+        }
+        foreach ($this->getTypes() as $type) {
+            $result['types'][$type->getName()] = $type->toArray();
+        }
+        return $result;
     }
 }

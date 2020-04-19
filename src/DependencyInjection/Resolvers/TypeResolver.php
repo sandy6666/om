@@ -94,18 +94,25 @@ class TypeResolver
      */
     public function resolveArguments($type, $arguments)
     {
+        $involvedTypes = @class_parents($type);
+        if (!is_array($involvedTypes)) {
+            $involvedTypes = [];
+        }
+        array_unshift($involvedTypes, $type);
         $types = $this->config->getTypes();
-        $type = $types[$type] ?? null;
-        if ($type) {
-            $injectedArguments = [];
-            $argumentList = $type->getArguments();
-            foreach ($argumentList as $argument) {
-                $injectedArguments[$argument->getName()] = $this->formatArgumentByType(
-                    $argument->getValue(),
-                    $argument->getType()
-                );
+        foreach ($involvedTypes as $type) {
+            $type = $types[$type] ?? null;
+            if ($type) {
+                $injectedArguments = [];
+                $argumentList = $type->getArguments();
+                foreach ($argumentList as $argument) {
+                    $injectedArguments[$argument->getName()] = $this->formatArgumentByType(
+                        $argument->getValue(),
+                        $argument->getType()
+                    );
+                }
+                $arguments = array_merge($injectedArguments, $arguments);
             }
-            $arguments = array_merge($injectedArguments, $arguments);
         }
         return $arguments;
     }
