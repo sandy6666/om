@@ -96,6 +96,27 @@ array to make it. In this example, we'll use the latter
     ]);
     $objectManagerFactory = new \Om\OmFactory($config);
     $objectManager = $objectManagerFactory->getInstance();
+    
+You can also create the __DI Config__ from a XML string using the 
+`\Om\DiConfig\Config::fromXml` method, like this,
+
+    $config = Om\DiConfig\Config::fromXml(
+        \file_get_contents(__DIR__  . '/di.xml')
+    );
+    
+Here is a sample of how the `di.xml` file should look like
+
+    <?xml version="1.0" encoding="utf-8" ?>
+    <config>
+        <preference for="MyCalculator" type="Calculator" />
+        <type name="Calculator">
+            <arguments>
+                <argument name="logger" xsi:type="object">Monolog\Logger</argument>
+            </arguments>
+            <plugin name="divide-by-zero-check" type="CalculatorPlugin" />
+        </type>
+    </config>
+    
 
 ### 4. Preferences
 
@@ -182,7 +203,7 @@ methods are singletons. Which means, if an object of the class is already create
 return that same object, or create a new one if it's the first time.
 
 There might be some times when we don't want this behaviour and want a new Object
-to be created. In cases like these, we use the `\Om\ObjectManager\ObjectManager::get` method.
+to be created. In cases like these, we use the `\Om\ObjectManager\ObjectManager::create` method.
 
     $aSingleton = $objectManager->get('A'); // singleton
     $aNew = $objectManager->create('A'); // new object
