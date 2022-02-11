@@ -10,11 +10,12 @@
 namespace Om\DiConfig;
 
 
+use Om\DependencyInjection\NonInterceptableInterface;
 use Om\DiConfig\Config\Preference;
 use Om\DiConfig\Config\Type;
 use Om\Tools\JsonSerializer;
 
-class Config
+class Config implements NonInterceptableInterface
 {
     /**
      * @var array
