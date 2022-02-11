@@ -13,6 +13,7 @@ namespace Om\DependencyInjection\ClassGenerators;
 use Om\Code\Generators\ClassGenerator;
 use Om\Code\Generators\Expr;
 use Om\DependencyInjection\InterceptorTrait;
+use Om\DependencyInjection\NonInterceptableInterface;
 
 class InterceptorGenerator extends AbstractClassGenerator
 {
@@ -29,6 +30,7 @@ class InterceptorGenerator extends AbstractClassGenerator
             ->setName($className."\\Interceptor")
             ->addTrait('\\'.InterceptorTrait::class)
             ->setParent('\\'.$className)
+            ->addImplements('\\' . NonInterceptableInterface::class)
             ->addComment("This class is a middleware between the \\$className implementation and caller");
 
         $classReflection = new \ReflectionClass($className);
@@ -47,7 +49,7 @@ class InterceptorGenerator extends AbstractClassGenerator
                 $methodArguments = [];
                 if ($classMethod->getReturnType()) {
                     $returnType = $classMethod->getReturnType()->getName();
-                    if (!$classMethod->getReturnType()->isBuiltin()) {
+                    if (!$classMethod->getReturnType()->isBuiltin() && $returnType !== 'self') {
                         $returnType = '\\' . $returnType;
                     }
                     $methodReturnType = [
@@ -96,6 +98,11 @@ class InterceptorGenerator extends AbstractClassGenerator
                 }
                 $methodArgumentsInBody = implode(', ', $methodArgumentsInBody);
 
+                if ($classMethod->getReturnType() && $classMethod->getReturnType()->getName() === 'void') {
+                    $returnStatement = '$this->___execAfter($result, "%s");';
+                } else {
+                    $returnStatement = 'return $this->___execAfter($result, "%s");';
+                }
                 $classGenerator->addMethod(
                     $methodName,
                     $methodArguments,
@@ -104,7 +111,7 @@ class InterceptorGenerator extends AbstractClassGenerator
                     $methodName,
                     '$arguments = $this->___execBefore(func_get_args(), "%s");
 $result = $this->___execAround($arguments, "%s");
-return $this->___execAfter($result, "%s");'
+' . $returnStatement
                     ),
                     $methodReturnType,
                     'public',

@@ -11,6 +11,7 @@ namespace Om\DependencyInjection\ClassGenerators;
 
 
 use Om\Code\Generators\ClassGenerator;
+use Om\DependencyInjection\NonInterceptableInterface;
 use Om\ObjectManager\ObjectManager;
 
 class FactoryGenerator extends AbstractClassGenerator
@@ -26,13 +27,26 @@ class FactoryGenerator extends AbstractClassGenerator
         return $classGenerator
             ->setName($className."Factory")
             ->addComment("Use this class to create a new instance of the \\$className class")
-            ->addMethod("create", [
+            ->addImplements('\\' . NonInterceptableInterface::class)
+            ->addMethod("createStatic", [
                 [
                     "type" => "array",
                     "name" => "data",
                     "default" => []
                 ]
             ], 'return \\'.ObjectManager::class.'::getInstance()->create(\\'.$className.'::class, $data);',
+                ClassGenerator::RETURN_TYPE_NONE,
+                "public static",
+                [
+                    "@param array \$data",
+                    "@return \\$className"
+                ])->addMethod("create", [
+                [
+                    "type" => "array",
+                    "name" => "data",
+                    "default" => []
+                ]
+            ], 'return self::createStatic($data);',
                 ClassGenerator::RETURN_TYPE_NONE,
                 "public",
                 [

@@ -10,6 +10,7 @@
 namespace Om\DependencyInjection\Resolvers;
 
 
+use Om\DependencyInjection\NonInterceptableInterface;
 use Om\DependencyInjection\Resolvers\TypeResolver\ArrayResolver;
 use Om\DependencyInjection\Resolvers\TypeResolver\BooleanResolver;
 use Om\DependencyInjection\Resolvers\TypeResolver\ComputedResolver;
@@ -23,7 +24,7 @@ use Om\DiConfig\Config;
 use Om\Exception\OmException;
 use Om\Registry\Registry;
 
-class TypeResolver
+class TypeResolver implements NonInterceptableInterface
 {
 
     /**
@@ -70,17 +71,13 @@ class TypeResolver
         }
 
         $canGenerate = Registry::get(Registry::CAN_GENERATE_CLASS_KEY);
-        if ($canGenerate) {
+        $isInterceptable = !in_array(NonInterceptableInterface::class, class_implements($type));
+        if ($canGenerate && $isInterceptable) {
             $interceptorClassName = 'Interceptor';
             $typeClassName = explode('\\', $type);
             $typeClassName = $typeClassName[count($typeClassName) - 1];
             $factorySuffix = "Factory";
-            if (
-                $typeClassName !== $interceptorClassName && // isn't already an interceptor
-                substr($type, -1*strlen($factorySuffix)) !== $factorySuffix // isn't a factory class
-            ) {
-                $type = $type . '\\' . $interceptorClassName;
-            }
+            $type = $type . '\\' . $interceptorClassName;
         }
 
         return $type;
@@ -94,7 +91,7 @@ class TypeResolver
      */
     public function resolveArguments($type, $arguments)
     {
-        $involvedTypes = @class_parents($type);
+        $involvedTypes = class_parents($type);
         if (!is_array($involvedTypes)) {
             $involvedTypes = [];
         }

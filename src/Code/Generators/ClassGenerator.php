@@ -26,6 +26,11 @@ class ClassGenerator
     private $parent = "";
 
     /**
+     * @var string[]
+     */
+    private $implements = [];
+
+    /**
      * @var MethodGenerator[]
      */
     private $methods = [];
@@ -74,6 +79,21 @@ class ClassGenerator
     {
         $this->parent = $parent;
         return $this;
+    }
+
+    /**
+     * @param string $interface
+     * @return $this
+     */
+    public function addImplements(string $interface)
+    {
+        $this->implements[] = $interface;
+        return $this;
+    }
+
+    public function getImplements()
+    {
+        return $this->implements;
     }
 
     /**
@@ -171,6 +191,9 @@ class ClassGenerator
         $content .= "class $className";
         if ($this->getParent()) {
             $content .= " extends ".$this->getParent();
+        }
+        if (count($this->getImplements())) {
+            $content .= " implements " . implode(', ', $this->getImplements());
         }
         $content .= " {\n";
         foreach ($this->getTraits() as $trait) {
