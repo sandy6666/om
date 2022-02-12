@@ -4,12 +4,13 @@ declare(strict_types=1);
 namespace Om\ObjectManager;
 
 
+use Om\DependencyInjection\NonInterceptableInterface;
 use Om\DependencyInjection\Resolvers\TypeResolver;
 use Om\Exception\OmException;
 use Om\Registry\Registry;
 use Om\Tools\File;
 
-class ObjectManager
+class ObjectManager implements NonInterceptableInterface
 {
     /**
      * @var ReflectionClass

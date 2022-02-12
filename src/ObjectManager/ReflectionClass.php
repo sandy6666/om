@@ -41,12 +41,7 @@ class ReflectionClass
     {
         try {
             $constructorArguments = [];
-            try {
-                $class = new \ReflectionClass($class);
-            } catch (\Exception $exception) {
-                $this->typeGenerator->generateClassIfPossible($class);
-                $class = new \ReflectionClass($class);
-            }
+            $class = new \ReflectionClass($class);
             $constructor = $class->getConstructor();
             if ($constructor && count($constructor->getParameters())) {
                 foreach ($constructor->getParameters() as $key => $constructorParameter) {

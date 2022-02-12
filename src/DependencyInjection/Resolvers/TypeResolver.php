@@ -20,6 +20,7 @@ use Om\DependencyInjection\Resolvers\TypeResolver\NumberResolver;
 use Om\DependencyInjection\Resolvers\TypeResolver\ObjectResolver;
 use Om\DependencyInjection\Resolvers\TypeResolver\StringResolver;
 use Om\DependencyInjection\Resolvers\TypeResolver\TypeResolverInterface;
+use Om\DependencyInjection\TypeGenerator;
 use Om\DiConfig\Config;
 use Om\Exception\OmException;
 use Om\Registry\Registry;
@@ -74,9 +75,6 @@ class TypeResolver implements NonInterceptableInterface
         $isInterceptable = !in_array(NonInterceptableInterface::class, class_implements($type));
         if ($canGenerate && $isInterceptable) {
             $interceptorClassName = 'Interceptor';
-            $typeClassName = explode('\\', $type);
-            $typeClassName = $typeClassName[count($typeClassName) - 1];
-            $factorySuffix = "Factory";
             $type = $type . '\\' . $interceptorClassName;
         }
 
@@ -91,6 +89,10 @@ class TypeResolver implements NonInterceptableInterface
      */
     public function resolveArguments($type, $arguments)
     {
+        if (!class_exists($type)) {
+            $typeGenerator = new TypeGenerator();
+            $typeGenerator->generateClassIfPossible($type);
+        }
         $involvedTypes = class_parents($type);
         if (!is_array($involvedTypes)) {
             $involvedTypes = [];
