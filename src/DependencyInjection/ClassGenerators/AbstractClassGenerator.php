@@ -55,8 +55,8 @@ abstract class AbstractClassGenerator
         $class = $this->getClass($this->classGenerator, $className);
         $className = $this->getClassName($className);
         $generatedDirectoryPath = Registry::get(Registry::GENERATED_DIRECTORY_PATH_KEY);
-        $this->file->load(
-            $generatedDirectoryPath . DIRECTORY_SEPARATOR .$className
-        )->write($class);
+        $classPath = $generatedDirectoryPath . DIRECTORY_SEPARATOR .$className;
+        $this->file->load($classPath)->write($class);
+        require $classPath; // require the file so the class can be autoloaded
     }
 }
