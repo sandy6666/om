@@ -36,6 +36,11 @@ class ClassGenerator
     private $methods = [];
 
     /**
+     * @var array
+     */
+    private $variables = [];
+
+    /**
      * @var string[]
      */
     private $comments = [];
@@ -105,6 +110,14 @@ class ClassGenerator
     }
 
     /**
+     * @return array
+     */
+    public function getVariables(): array
+    {
+        return $this->variables;
+    }
+
+    /**
      * @param string $name
      * @param array $arguments
      * @param string $body
@@ -139,6 +152,22 @@ class ClassGenerator
         }
 
         $this->methods[] = $methodGenerator;
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     * @param string $scope
+     * @param string|null $default
+     * @return $this
+     */
+    public function addVariable($name, $scope = 'public', $default = null)
+    {
+        $this->variables[] = [
+            'name' => $name,
+            'scope' => $scope,
+            'default' => $default
+        ];
         return $this;
     }
 
@@ -196,6 +225,15 @@ class ClassGenerator
             $content .= " implements " . implode(', ', $this->getImplements());
         }
         $content .= " {\n";
+
+        foreach ($this->getVariables() as $variable) {
+            $default = '';
+            if ($variable['default'] !== null) {
+                $default = ' = ' . $variable['default'];
+            }
+            $content .= sprintf("\n\t%s $%s%s;\n", $variable['scope'], $variable['name'], $default);
+        }
+
         foreach ($this->getTraits() as $trait) {
             $content .= sprintf("\n\tuse %s;\n", $trait);
         }

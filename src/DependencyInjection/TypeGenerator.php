@@ -12,6 +12,7 @@ namespace Om\DependencyInjection;
 
 use Om\DependencyInjection\ClassGenerators\FactoryGenerator;
 use Om\DependencyInjection\ClassGenerators\InterceptorGenerator;
+use Om\DependencyInjection\ClassGenerators\ProxyGenerator;
 use Om\Registry\Registry;
 
 class TypeGenerator
@@ -24,6 +25,7 @@ class TypeGenerator
         if ($canGenerate) {
             $this->generateFactory($class);
             $this->generateInterceptor($class);
+            $this->generateProxy($class);
         }
     }
 
@@ -48,6 +50,19 @@ class TypeGenerator
         $interceptorGenerator = new InterceptorGenerator();
         $className = explode('\\', $class);
         if ($className[count($className) - 1] === 'Interceptor') {
+            array_pop($className);
+            $interceptorGenerator->generate(implode('\\', $className));
+        }
+    }
+
+    /**
+     * @param $class
+     */
+    protected function generateProxy($class)
+    {
+        $interceptorGenerator = new ProxyGenerator();
+        $className = explode('\\', $class);
+        if ($className[count($className) - 1] === 'Proxy') {
             array_pop($className);
             $interceptorGenerator->generate(implode('\\', $className));
         }
