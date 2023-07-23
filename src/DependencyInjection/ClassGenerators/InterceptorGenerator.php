@@ -65,7 +65,7 @@ class InterceptorGenerator extends AbstractClassGenerator
                         'name' => $parameter->getName()
                     ];
 
-                    if ($parameter->getClass()) {
+                    if ($parameter->getType()) {
                         $methodArgument['type'] = '\\' . $methodArgument['type'];
                     }
 

@@ -69,10 +69,10 @@ class ReflectionClass
             $constructorArguments[$key] = $constructorParameter->getDefaultValue();
         } else {
             try {
-                $constructorParameterClass = $constructorParameter->getClass();
+                $constructorParameterClass = $constructorParameter->getType();
             } catch (\Exception $exception) {
                 $this->typeGenerator->generateClassIfPossible($constructorParameter->getType()->getName());
-                $constructorParameterClass = $constructorParameter->getClass();
+                $constructorParameterClass = $constructorParameter->getType();
             }
             if ($constructorParameterClass) {
                 $constructorParameterName = $constructorParameterClass->getName();
