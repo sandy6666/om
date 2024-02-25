@@ -9,19 +9,21 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputOption;
 
-abstract class CliCommand
+class CliCommand
 {
     private Application $application;
 
     protected String $name;
 
-    protected InputDefinition $definition;
+    protected array $arguments;
 
-    private array $arguments;
+    protected Command $cliCommand;
 
-    private Command $cliCommand;
+    protected array $options;
 
-    private array $options;
+    protected $help;
+
+    protected string $command;
 
     /**
      * @param Application $application
@@ -37,8 +39,8 @@ abstract class CliCommand
      */
     protected function registerCliCommand()
     {
-        $this->cliCommand = $this->application->register($this->name);
-        $this->cliCommand->setDefinition($this->definition);
+        $this->cliCommand = $this->application->register($this->command);
+        $this->cliCommand->setName($this->name);
         foreach ($this->arguments as $argument) {
             $this->cliCommand->addArgument(
                 $argument['name'],
@@ -53,6 +55,8 @@ abstract class CliCommand
                     $option['type'] ?? InputOption::VALUE_OPTIONAL
             );
         }
+
+        $this->cliCommand->setHelp($this->help ?? "");
     }
 
     /**

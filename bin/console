@@ -1,0 +1,25 @@
+#!/usr/bin/env php
+<?php
+
+require __DIR__.'/../vendor/autoload.php';
+
+use Symfony\Component\Console\Application;
+
+$dir = __DIR__ . '/../var/cache/';
+
+$commandsListFile = 'commands.json';
+
+if (PHP_SAPI !== 'cli') {
+    echo 'bin/magento must be run as a CLI application';
+    exit(1);
+}
+
+try {
+    $commandsList = file_get_contents($dir . $commandsListFile);
+    $commandsList = json_decode($commandsList, true);
+    foreach ($commandsList as $key => $command) {
+        echo $key;
+    }
+} catch (\Exception $e) {
+    exit(1);
+}
